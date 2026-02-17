@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аудит ІБ - Опитувальник</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        legend {
+            font-weight: bold;
+            padding: 0 10px;
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Стилі для звіту */
+        #reportOutput {
+            margin-top: 30px;
+            display: none;
+            padding: 20px;
+            background: #fff;
+            border: 2px solid var(--primary-color);
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .report-table th, .report-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .report-table th {
+            background-color: #f2f2f2;
+        }
+
+        @media print {
+            .container > *:not(#reportOutput) { display: none; }
+            #reportOutput { display: block; border: none; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 Анкета аудиту ІБ</h1>
+    <p style="text-align: center;">Первинний збір даних про стан ІТ-інфраструктури</p>
+
+    <form id="auditForm">
+        <fieldset class="section">
+            <legend>1. Дані користувача</legend>
+            <div class="form-group">
+                <label for="userName">ПІБ співробітника:</label>
+                <input type="text" id="userName" required placeholder="Н-р: Санжара Єгор Віталійович">
+            </div>
+            <div class="form-group">
+                <label for="position">Посада:</label>
+                <input type="text" id="position" required>
+            </div>
+            <div class="form-group">
+                <label for="skill">Кваліфікація в сфері ІТ/ІБ:</label>
+                <select id="skill">
+                    <option value="Початківець">Початківець (базовий користувач)</option>
+                    <option value="Середній">Середній (впевнений користувач)</option>
+                    <option value="Професіонал">Професіонал (ІТ-фахівець)</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <fieldset class="section">
+            <legend>2. Склад та конфігурація ІТК</legend>
+            <div class="form-group">
+                <label>Тип апаратного забезпечення:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="hw" value="ПК"> Стаціонарний ПК</label>
+                    <label><input type="checkbox" name="hw" value="Ноутбук"> Ноутбук</label>
+                    <label><input type="checkbox" name="hw" value="Планшет/Смартфон"> Мобільний пристрій (корпоративний)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="os">Операційна система:</label>
+                <select id="os">
+                    <option value="Windows 10/11">Windows 10/11</option>
+                    <option value="Linux">Linux (Ubuntu/Debian/тощо)</option>
+                    <option value="macOS">macOS</option>
+                    <option value="Інше">Інше</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <fieldset class="section">
+            <legend>3. Організація робіт та СУІБ</legend>
+            <div class="form-group">
+                <label>Чи використовуєте ви засоби шифрування даних?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="crypto" value="Так" required> Так</label>
+                    <label><input type="radio" name="crypto" value="Ні"> Ні</label>
+                    <label><input type="radio" name="crypto" value="Не знаю"> Не володію інформацією</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="software">Перелік ПЗ, яке використовується для роботи:</label>
+                <textarea id="software" rows="3" placeholder="Офісні програми, CRM, спеціалізоване ПЗ..."></textarea>
+            </div>
+        </fieldset>
+
+        <button type="button" onclick="generateReport()">Сформувати та переглянути звіт</button>
+    </form>
+
+    <div id="reportOutput">
+        <h2>📊 Звіт за результатами первинного аудиту</h2>
+        <p><strong>Дата формування:</strong> <span id="reportDate"></span></p>
+        
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Параметр</th>
+                    <th>Дані</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody">
+                </tbody>
+        </table>
+        
+        <div style="margin-top: 20px;">
+            <p><em>Звіт сформовано автоматично для подання викладачеві.</em></p>
+            <button onclick="window.print()" style="background-color: #27ae60;">Роздрукувати або зберегти в PDF</button>
+            <button onclick="location.reload()" style="background-color: #95a5a6; margin-top: 10px;">Заповнити заново</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateReport() {
+        const name = document.getElementById('userName').value;
+        if (!name) {
+            alert("Будь ласка, введіть ПІБ!");
+            return;
+        }
+
+        const position = document.getElementById('position').value;
+        const skill = document.getElementById('skill').value;
+        const os = document.getElementById('os').value;
+        const software = document.getElementById('software').value || "Не вказано";
+        
+        // Отримання вибраних чекбоксів (Hardware)
+        const hwElements = document.getElementsByName('hw');
+        let hwValues = [];
+        hwElements.forEach(el => { if(el.checked) hwValues.push(el.value); });
+        
+        // Отримання радіокнопки (Шифрування)
+        const cryptoElements = document.getElementsByName('crypto');
+        let cryptoValue = "Не вказано";
+        cryptoElements.forEach(el => { if(el.checked) cryptoValue = el.value; });
+
+        // Формування таблиці
+        const tableBody = document.getElementById('reportTableBody');
+        tableBody.innerHTML = `
+            <tr><td><strong>Користувач</strong></td><td>${name}</td></tr>
+            <tr><td><strong>Посада</strong></td><td>${position}</td></tr>
+            <tr><td><strong>Рівень ІТ-компетенцій</strong></td><td>${skill}</td></tr>
+            <tr><td><strong>Обладнання</strong></td><td>${hwValues.join(', ') || 'Не вибрано'}</td></tr>
+            <tr><td><strong>ОС</strong></td><td>${os}</td></tr>
+            <tr><td><strong>Використане ПЗ</strong></td><td>${software}</td></tr>
+            <tr><td><strong>Використання шифрування</strong></td><td>${cryptoValue}</td></tr>
+        `;
+
+        document.getElementById('reportDate').innerText = new Date().toLocaleString('uk-UA');
+        
+        // Приховати форму, показати звіт
+        document.getElementById('auditForm').style.display = 'none';
+        const report = document.getElementById('reportOutput');
+        report.style.display = 'block';
+        report.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
