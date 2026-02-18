@@ -14,7 +14,7 @@
         }
 
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 950px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
         
         h1, h2 { text-align: center; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
         .section-title { background: var(--primary); color: white; padding: 10px 15px; border-radius: 4px; margin-top: 30px; font-size: 1.1em; }
@@ -24,20 +24,31 @@
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9em; }
         input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         
+        .software-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 15px; 
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            border: 1px solid #eee;
+            background: #fafafa;
+        }
+        .sw-category { grid-column: 1 / -1; font-weight: bold; border-bottom: 2px solid var(--accent); color: var(--accent); margin-top: 10px; padding-bottom: 5px; }
+        .sw-item { display: flex; align-items: center; gap: 8px; font-size: 0.85em; cursor: pointer; font-weight: normal; }
+
         .quiz-item { padding: 15px; border-bottom: 1px solid #eee; transition: 0.3s; }
-        .quiz-item:hover { background: #fdfdfd; }
         .options { margin-top: 10px; display: grid; grid-template-columns: 1fr; gap: 8px; }
         .options label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 
         button#generateBtn { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 5px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 40px; }
         button:hover { opacity: 0.9; }
 
-        /* Офіційний Звіт */
         #reportView { display: none; }
         .report-paper { padding: 50px; border: 1px solid #ddd; background: white; font-family: 'Times New Roman', serif; line-height: 1.6; }
-        .report-header { text-align: center; margin-bottom: 40px; }
         .report-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        .report-table th, .report-table td { border: 1px solid black; padding: 8px 12px; text-align: left; }
+        .report-table th, .report-table td { border: 1px solid black; padding: 8px 12px; text-align: left; vertical-align: top; }
         .score-indicator { font-size: 24px; font-weight: bold; text-align: center; padding: 20px; border: 2px solid black; margin: 20px 0; }
         .signatures { display: flex; justify-content: space-between; margin-top: 60px; }
         .sig-line { border-top: 1px solid black; width: 250px; text-align: center; padding-top: 5px; }
@@ -55,7 +66,7 @@
 <div class="container">
     <div id="formView" class="no-print">
         <h1>📊 Опитувальний лист аудиту ІТС</h1>
-        <p style="text-align:center">Відповідно до вимог нормативних документів з ІБ</p>
+        <p style="text-align:center">Розроблено для студента групи ЗІм-25-2 Санжари Є.В.</p>
 
         <div class="section-title">I. Персональні дані та об'єкт аудиту</div>
         <div class="form-row">
@@ -75,7 +86,11 @@
             </div>
             <div class="form-group">
                 <label>Посада:</label>
-                <input type="text" id="userPos">
+                <select id="userPos" onchange="updateQuiz()">
+                    <option value="Користувач ІТС">Користувач ІТС</option>
+                    <option value="Системний адміністратор ІТС">Системний адміністратор ІТС</option>
+                    <option value="Адміністратор безпеки ІТС">Адміністратор безпеки ІТС</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Рівень ІТ-кваліфікації:</label>
@@ -87,30 +102,50 @@
             </div>
         </div>
 
-        <div class="section-title">II. Склад і конфігурація ІТС</div>
+        <div class="section-title">II. Склад і конфігурація ІТС (Hardware & Software)</div>
         <div class="form-group" style="margin-top:15px">
-            <label>Тип апаратного забезпечення (Hardware):</label>
+            <label>Тип апаратного забезпечення:</label>
             <div style="display:flex; gap:20px; flex-wrap:wrap">
-                <label><input type="checkbox" name="hw" value="Робоча станція"> Робоча станція</label>
-                <label><input type="checkbox" name="hw" value="Сервер"> Сервер</label>
-                <label><input type="checkbox" name="hw" value="Мережеве обладнання"> Мережеве обладнання</label>
-                <label><input type="checkbox" name="hw" value="Периферія"> Принтери/Сканери</label>
+                <label class="sw-item"><input type="checkbox" name="hw" value="Робоча станція"> Робоча станція</label>
+                <label class="sw-item"><input type="checkbox" name="hw" value="Серверне обладнання"> Серверне обладнання</label>
+                <label class="sw-item"><input type="checkbox" name="hw" value="Мережеве обладнання"> Мережеве обладнання</label>
+                <label class="sw-item"><input type="checkbox" name="hw" value="Периферія"> Принтери/Сканери</label>
             </div>
         </div>
-        <div class="form-group">
-            <label>Програмне забезпечення (ОС та прикладне ПЗ):</label>
-            <textarea id="swList" rows="2" placeholder="Напр: Windows 11, MS Office, SAP..."></textarea>
+
+        <label>Оберіть встановлене програмне забезпечення:</label>
+        <div class="software-grid" id="swGrid">
+            <div class="sw-category">Системні та офісні програми</div>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Cisco Secure Client Full"> Cisco Secure Client Full</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Office 365"> Microsoft Office 365</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="LibreOffice"> LibreOffice</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="7-Zip"> 7-Zip</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Adobe Reader"> Adobe Reader</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="PowerShell 7"> PowerShell 7</label>
+
+            <div class="sw-category">Українські спеціалізовані програми</div>
+            <label class="sw-item"><input type="checkbox" name="sw" value="ІІТ Користувач ЦСК-1"> ІІТ Користувач ЦСК-1</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Аскод Scan Client"> Scan Client (Аскод)</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="1C / Medoc"> 1C / Medoc</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="АРМ Електронного обміну"> АРМ Електронного обміну</label>
+
+            <div class="sw-category">Розробка, БД та Безпека</div>
+            <label class="sw-item"><input type="checkbox" name="sw" value="IDE (VS Code/PyCharm)"> VS Code / PyCharm</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Docker Desktop"> Docker Desktop</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="DBeaver/pgAdmin"> DBeaver / pgAdmin</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="CrowdStrike Falcon Sensor"> CrowdStrike Falcon Sensor</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="KeePass"> KeePass</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="WireShark"> WireShark</label>
         </div>
 
         <div class="section-title">III. Наявність та склад СУІБ і КСЗІ</div>
         <div class="form-row">
             <div class="form-group">
-                <label>Чи впроваджено на підприємстві КСЗІ?</label>
+                <label>Чи впроваджено КСЗІ?</label>
                 <select id="ksziStatus">
-                    <option value="Так, наявний атестат відповідності">Так, наявний атестат відповідності</option>
+                    <option value="Наявний атестат відповідності">Так, наявний атестат відповідності</option>
                     <option value="В процесі розробки">В процесі розробки</option>
                     <option value="Відсутня">Відсутня</option>
-                    <option value="Не володію інформацією">Не володію інформацією</option>
                 </select>
             </div>
             <div class="form-group">
@@ -123,36 +158,21 @@
             </div>
         </div>
 
-        <div class="section-title">IV. Оцінка знань та організації робіт (Тестування)</div>
-        
-        <div class="quiz-item">
-            <p><strong>1. Як часто ви змінюєте пароль доступу до ІТС?</strong></p>
-            <div class="options">
-                <label><input type="radio" name="q1" value="2"> Раз на 90 днів (згідно політики)</label>
-                <label><input type="radio" name="q1" value="1"> Тільки коли змушує система</label>
-                <label><input type="radio" name="q1" value="0"> Ніколи не змінював(ла)</label>
-            </div>
+        <label>Наявна нормативна документація:</label>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; background: #fff; padding: 15px; border: 1px solid #ccc; border-radius: 4px;">
+            <label class="sw-item"><input type="checkbox" name="docs" value="Положення про ІБ"> Положення про ІБ</label>
+            <label class="sw-item"><input type="checkbox" name="docs" value="Інструкції користувачів"> Інструкції користувачів</label>
+            <label class="sw-item"><input type="checkbox" name="docs" value="План реагування"> План реагування на інциденти</label>
+            <label class="sw-item"><input type="checkbox" name="docs" value="Політика паролів"> Політика парольного захисту</label>
+            <label class="sw-item"><input type="checkbox" name="docs" value="Журнали обліку"> Журнали обліку носіїв/доступу</label>
+            <label class="sw-item"><input type="checkbox" name="docs" value="Накази про ТЗІ"> Накази про відповідальних за ТЗІ</label>
         </div>
 
-        <div class="quiz-item">
-            <p><strong>2. Яким чином ви дієте при виявленні несправності або підозрілої активності?</strong></p>
-            <div class="options">
-                <label><input type="radio" name="q2" value="2"> Негайно повідомляю адміністратора ІБ</label>
-                <label><input type="radio" name="q2" value="1"> Намагаюсь виправити самостійно</label>
-                <label><input type="radio" name="q2" value="0"> Ігнорую, якщо це не заважає роботі</label>
+        <div class="section-title">IV. Тестування обізнаності</div>
+        <div id="quizContainer">
             </div>
-        </div>
 
-        <div class="quiz-item">
-            <p><strong>3. Де ви зберігаєте резервні копії важливих робочих документів?</strong></p>
-            <div class="options">
-                <label><input type="radio" name="q3" value="2"> На виділеному мережевому сховищі (Backup)</label>
-                <label><input type="radio" name="q3" value="1"> На робочому столі ПК</label>
-                <label><input type="radio" name="q3" value="0"> Копії не створюються</label>
-            </div>
-        </div>
-
-        <button id="generateBtn" onclick="processAudit()">СФОРМУВАТИ ЕЛЕКТРОННИЙ ЗВІТ</button>
+        <button id="generateBtn" onclick="processAudit()">СФОРМУВАТИ ОФІЦІЙНИЙ ЗВІТ</button>
     </div>
 
     <div id="reportView">
@@ -162,127 +182,112 @@
                 <p>Дата: <span id="rDate"></span> | Локація: м. <span id="rCity"></span></p>
             </div>
 
-            <p><strong>Підприємство:</strong> <span id="rComp"></span></p>
+            <p><strong>Об'єкт аудиту:</strong> <span id="rComp"></span></p>
             
             <table class="report-table">
-                <tr>
-                    <th colspan="2" style="background:#f0f0f0">1. Дані про користувача та ІТС</th>
-                </tr>
-                <tr>
-                    <td>Користувач (ПІБ)</td>
-                    <td id="rName"></td>
-                </tr>
-                <tr>
-                    <td>Посада / Кваліфікація</td>
-                    <td id="rInfo"></td>
-                </tr>
-                <tr>
-                    <td>Конфігурація ІТС (Апаратна)</td>
-                    <td id="rHw"></td>
-                </tr>
-                <tr>
-                    <td>Прикладне ПЗ</td>
-                    <td id="rSw"></td>
-                </tr>
-                <tr>
-                    <th colspan="2" style="background:#f0f0f0">2. Стан СУІБ та КСЗІ</th>
-                </tr>
-                <tr>
-                    <td>Статус КСЗІ</td>
-                    <td id="rKszi"></td>
-                </tr>
-                <tr>
-                    <td>Впровадження СУІБ</td>
-                    <td id="rSuib"></td>
-                </tr>
+                <tr><th colspan="2" style="background:#f0f0f0">1. Дані про користувача та ІТС</th></tr>
+                <tr><td>Користувач (ПІБ)</td><td id="rName"></td></tr>
+                <tr><td>Посада / Кваліфікація</td><td id="rInfo"></td></tr>
+                <tr><td>Апаратне забезпечення</td><td id="rHw"></td></tr>
+                <tr><td>Встановлене ПЗ</td><td id="rSw"></td></tr>
+                <tr><th colspan="2" style="background:#f0f0f0">2. Стан СУІБ та КСЗІ</th></tr>
+                <tr><td>КСЗІ / СУІБ</td><td id="rSecurity"></td></tr>
+                <tr><td>Документація</td><td id="rDocs"></td></tr>
             </table>
 
             <div class="score-indicator" id="rScoreBox">
-                РЕЗУЛЬТАТ ОЦІНКИ ОБІЗНАНОСТІ: <span id="rPoints"></span>/6
+                ОЦІНКА ОБІЗНАНОСТІ: <span id="rPoints"></span>/6
             </div>
 
             <p><strong>Висновок аудитора:</strong> <span id="rConclusion"></span></p>
 
             <div class="signatures">
-                <div>
-                    <p>Студент (Аудитор):</p>
-                    <div class="sig-line">Санжара Є.В.</div>
-                </div>
-                <div>
-                    <p>Користувач (Опитуваний):</p>
-                    <div class="sig-line">(підпис)</div>
-                </div>
+                <div><p>Аудитор:</p><div class="sig-line">Санжара Є.В.</div></div>
+                <div><p>Користувач:</p><div class="sig-line">(підпис)</div></div>
             </div>
 
             <div class="no-print" style="margin-top:40px; text-align:center">
-                <button onclick="window.print()" style="background:var(--success); color:white; padding:10px 30px; border:none; border-radius:4px; cursor:pointer">Зберегти як PDF / Друкувати</button>
-                <button onclick="location.reload()" style="background:#7f8c8d; color:white; padding:10px 30px; border:none; border-radius:4px; cursor:pointer; margin-left:10px">Нове опитування</button>
+                <button onclick="window.print()" style="background:var(--success); color:white; padding:10px 30px; border:none; border-radius:4px; cursor:pointer">Друк / PDF</button>
+                <button onclick="location.reload()" style="background:#7f8c8d; color:white; padding:10px 30px; border:none; border-radius:4px; cursor:pointer; margin-left:10px">Новий аудит</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    const quizData = {
+        user: [
+            { q: "1. Як часто ви змінюєте пароль доступу?", opt: ["Раз на 90 днів", "Коли змушує система", "Ніколи"], val: [2, 1, 0] },
+            { q: "2. Дії при виявленні підозрілої активності?", opt: ["Повідомляю адміністратора", "Виправляю сам", "Ігнорую"], val: [2, 1, 0] },
+            { q: "3. Де зберігаються резервні копії документів?", opt: ["На Backup-сервері", "На робочому столі", "Не створюються"], val: [2, 1, 0] }
+        ],
+        admin: [
+            { q: "1. Як реалізовано контроль цілісності системних файлів?", opt: ["Автоматизовано (HIDS)", "Ручний контроль", "Не контролюється"], val: [2, 1, 0] },
+            { q: "2. Політика керування вразливостями?", opt: ["Регулярний сканер та патчінг", "Оновлення критичних вузлів", "По мірі можливості"], val: [2, 1, 0] },
+            { q: "3. Моніторинг логів (SIEM/Syslog)?", opt: ["Щоденно з алертами", "Раз на тиждень вручну", "Тільки при інцидентах"], val: [2, 1, 0] }
+        ]
+    };
+
+    function updateQuiz() {
+        const pos = document.getElementById('userPos').value;
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+        const set = (pos.includes("адміністратор")) ? quizData.admin : quizData.user;
+        
+        set.forEach((item, i) => {
+            container.innerHTML += `
+                <div class="quiz-item">
+                    <p><strong>${item.q}</strong></p>
+                    <div class="options">
+                        ${item.opt.map((o, idx) => `<label><input type="radio" name="q${i+1}" value="${item.val[idx]}"> ${o}</label>`).join('')}
+                    </div>
+                </div>`;
+        });
+    }
+
     function processAudit() {
-        // Збір базових даних
         const data = {
             city: document.getElementById('city').value,
             company: document.getElementById('company').value,
             name: document.getElementById('userName').value,
             pos: document.getElementById('userPos').value,
             level: document.getElementById('userLevel').value,
-            sw: document.getElementById('swList').value,
             kszi: document.getElementById('ksziStatus').value,
             suib: document.getElementById('suibStatus').value
         };
 
-        if(!data.name || !data.company) {
-            alert("Будь ласка, вкажіть назву підприємства та ПІБ користувача!");
-            return;
-        }
+        if(!data.name || !data.company) return alert("Заповніть ПІБ та Організацію!");
 
-        // Збір Hardware (checkboxes)
-        let hw = [];
+        let hw = [], sw = [], docs = [], score = 0;
         document.querySelectorAll('input[name="hw"]:checked').forEach(c => hw.push(c.value));
-        
-        // Розрахунок балів
-        let score = 0;
+        document.querySelectorAll('input[name="sw"]:checked').forEach(c => sw.push(c.value));
+        document.querySelectorAll('input[name="docs"]:checked').forEach(c => docs.push(c.value));
         [1,2,3].forEach(i => {
-            const selected = document.querySelector(`input[name="q${i}"]:checked`);
-            if(selected) score += parseInt(selected.value);
+            const rad = document.querySelector(`input[name="q${i}"]:checked`);
+            if(rad) score += parseInt(rad.value);
         });
 
-        // Формування висновку
-        let conclusion = "";
-        if(score >= 5) conclusion = "Рівень безпеки високий. Користувач дотримується регламентів. ІТС відповідає базовим вимогам.";
-        else if(score >= 3) conclusion = "Рівень безпеки задовільний. Рекомендовано провести додатковий інструктаж та налагодити систему бекапу.";
-        else conclusion = "КРИТИЧНИЙ СТАН. Користувач не обізнаний з правилами ІБ. Потрібен терміновий технічний аудит та навчання.";
-
-        // Заповнення звіту
         document.getElementById('rDate').innerText = new Date().toLocaleDateString('uk-UA');
         document.getElementById('rCity').innerText = data.city || "__________";
         document.getElementById('rComp').innerText = data.company;
         document.getElementById('rName').innerText = data.name;
         document.getElementById('rInfo').innerText = `${data.pos} (${data.level})`;
         document.getElementById('rHw').innerText = hw.join(', ') || "Не вказано";
-        document.getElementById('rSw').innerText = data.sw || "Стандартний набір";
-        document.getElementById('rKszi').innerText = data.kszi;
-        document.getElementById('rSuib').innerText = data.suib;
+        document.getElementById('rSw').innerText = sw.join(', ') || "Не обрано";
+        document.getElementById('rSecurity').innerText = `КСЗІ: ${data.kszi}, СУІБ: ${data.suib}`;
+        document.getElementById('rDocs').innerText = docs.join(', ') || "Відсутня";
         document.getElementById('rPoints').innerText = score;
+
+        let conclusion = score >= 5 ? "Рівень безпеки високий." : score >= 3 ? "Задовільно. Потрібен інструктаж." : "КРИТИЧНО. Потрібен аудит.";
         document.getElementById('rConclusion').innerText = conclusion;
 
-        // Колір рамки залежно від балів
-        const box = document.getElementById('rScoreBox');
-        if(score >= 5) box.style.borderColor = "green";
-        else if(score < 3) box.style.borderColor = "red";
-
-        // Показ звіту
         document.getElementById('formView').style.display = 'none';
         document.getElementById('reportView').style.display = 'block';
         window.scrollTo(0,0);
     }
-</script>
 
+    window.onload = updateQuiz;
+</script>
 </body>
 </html>
 
