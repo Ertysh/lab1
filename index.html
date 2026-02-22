@@ -41,8 +41,8 @@
         .options { margin-top: 10px; display: grid; grid-template-columns: 1fr; gap: 8px; }
         .options label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 
-        button#generateBtn { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 5px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 40px; }
-        button:hover { opacity: 0.9; }
+        button#generateBtn { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 5px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 40px; transition: 0.3s; }
+        button#generateBtn:hover { background: #1a5276; }
 
         #reportView { display: none; }
         .report-paper { padding: 40px; border: 1px solid #ddd; background: white; font-family: 'Times New Roman', serif; line-height: 1.5; }
@@ -107,7 +107,7 @@
 
         <div class="form-group" style="margin-top: 20px;">
             <label>Програмне забезпечення (вкажіть наявне ПЗ через кому):</label>
-            <textarea id="softwareInput" rows="4" placeholder="Напр: Windows 10, Microsoft Office 365, Cisco Secure Client, 1C, Антивірус Defender..."></textarea>
+            <textarea id="softwareInput" rows="4" placeholder="Напр: Windows 10, Microsoft Office 365, Cisco Secure Client, 1C, Антивірус Defender, Docker, Git..."></textarea>
         </div>
 
         <div class="section-title">III. Організаційне забезпечення та Журнали</div>
@@ -160,7 +160,7 @@
                 <tr><td>Журнали обліку</td><td id="rLogs"></td></tr>
                 <tr><td>Документація</td><td id="rDocs"></td></tr>
             </table>
-            <div class="score-indicator" id="rScoreBox">РЕЗУЛЬТАТ ОПИТУВАННЯ: <span id="rPoints"></span>/6</div>
+            <div class="score-indicator" id="rScoreBox">РЕЗУЛЬТАТ ОПИТУВАННЯ: <span id="rPoints"></span></div>
             <p><strong>Висновок аудитора:</strong> <span id="rConclusion"></span></p>
             <div class="signatures">
                 <div><p>Аудитор:</p><div class="sig-line">Санжара Є.В.</div></div>
@@ -175,16 +175,29 @@
 </div>
 
 <script>
+    // Масив питань динамічно розділений на 3 ролі
     const bank = {
-        user: [
-            { q: "1. Як часто змінюєте пароль до ІТС?", opt: ["Раз на 90 днів", "Коли змушує система", "Ніколи"], val: [2,1,0] },
-            { q: "2. Дії при виявленні підозрілої активності?", opt: ["Повідомляю адміністратора", "Виправляю сам", "Ігнорую"], val: [2,1,0] },
-            { q: "3. Де зберігаються резервні копії документів?", opt: ["На мережевому сховищі", "На робочому столі", "Не роблю копій"], val: [2,1,0] }
+        "Користувач ІТС": [
+            { q: "1. Як часто ви змінюєте пароль до робочого ПК/Мережі?", opt: ["Раз на 90 днів або частіше", "Коли змушує система", "Ніколи / Записаний на стікері"], val: [2,1,0] },
+            { q: "2. Ваші дії при виявленні підозрілої активності (наприклад, фішинговий лист)?", opt: ["Негайно повідомляю службу ІТ/Безпеки", "Видаляю лист і працюю далі", "Ігнорую або відкриваю вкладення"], val: [2,1,0] },
+            { q: "3. Де ви зберігаєте важливі робочі документи?", opt: ["На корпоративному захищеному сховищі", "Локально на робочому столі", "На особистій флешці"], val: [2,1,0] },
+            { q: "4. Чи блокуєте ви екран (Win+L) відходячи від робочого місця?", opt: ["Завжди блокую", "Тільки якщо йду надовго", "Ніколи не блокую"], val: [2,1,0] },
+            { q: "5. Використання особистих зовнішніх носіїв (USB)?", opt: ["Не використовую (заборонено)", "Використовую тільки перевірені/дозволені", "Вільно використовую будь-які"], val: [2,1,0] }
         ],
-        admin: [
-            { q: "1. Контроль цілісності системних файлів?", opt: ["Автоматизовано (HIDS)", "Ручний контроль", "Відсутній"], val: [2,1,0] },
-            { q: "2. Моніторинг логів безпеки?", opt: ["SIEM / Щоденно", "Періодично", "Тільки при збоях"], val: [2,1,0] },
-            { q: "3. Управління вразливостями (Vulnerability Mgmt)?", opt: ["Регулярне сканування", "Тільки критичні патчі", "Не проводиться"], val: [2,1,0] }
+        "Системний адміністратор ІТС": [
+            { q: "1. Процес встановлення оновлень безпеки (Patch Management)?", opt: ["Регулярно через централізовані системи (WSUS/SCCM)", "Вручну, від випадку до випадку", "Тільки при наявності проблем/збоїв"], val: [2,1,0] },
+            { q: "2. Тестування відновлення серверів з резервних копій (Disaster Recovery)?", opt: ["Тестуємо регулярно за розкладом", "Робимо бекапи, але ніколи не тестували відновлення", "Бекапи робляться нерегулярно"], val: [2,1,0] },
+            { q: "3. Рівень моніторингу ІТ-інфраструктури (Zabbix, Prometheus тощо)?", opt: ["Комплексний (метрики, логи, налаштовані алерти)", "Базовий (тільки пінг та місце на диску)", "Моніторинг відсутній"], val: [2,1,0] },
+            { q: "4. Управління обліковими записами (AD / LDAP)?", opt: ["Регулярний аудит, автоматичне блокування звільнених", "Блокування тільки після особистого запиту HR", "Використовуються спільні/групові акаунти"], val: [2,1,0] },
+            { q: "5. Стандартизація та управління конфігураціями?", opt: ["Використовується Infrastructure as Code (Ansible/Terraform)", "Використовуються базові шаблони віртуальних машин", "Кожен сервер налаштовується індивідуально вручну"], val: [2,1,0] }
+        ],
+        "Адміністратор безпеки ІТС": [
+            { q: "1. Управління вразливостями (Vulnerability Management)?", opt: ["Регулярне сканування (Nessus/Qualys) та контроль патчів", "Разові перевірки під час щорічного аудиту", "Сканування не проводиться взагалі"], val: [2,1,0] },
+            { q: "2. Моніторинг подій безпеки (SIEM)?", opt: ["Централізований збір логів (Syslog/WinEvent) + налаштовані Use Cases", "Логи збираються, але аналізуються вручну", "Логи зберігаються тільки локально на серверах"], val: [2,1,0] },
+            { q: "3. Процес реагування на інциденти (Incident Response Plan)?", opt: ["Є затверджений план (IRP), проводяться регулярні навчання", "Реагуємо ситуативно ('гасимо пожежі')", "План відсутній, обов'язки не розподілені"], val: [2,1,0] },
+            { q: "4. Захист кінцевих точок та серверів (Endpoint Security)?", opt: ["Впроваджено системи EDR/XDR, активне блокування загроз", "Тільки базовий сигнатурний антивірус", "Захист кінцевих точок відсутній"], val: [2,1,0] },
+            { q: "5. Управління привілейованим доступом (Privileged Access Management)?", opt: ["Використання PAM-систем, MFA для адмінів, аудит сесій", "Звичайні та адмінські права розділені, але без MFA", "Всі адміністратори сидять під Domain Admin"], val: [2,1,0] },
+            { q: "6. Контроль мережевої безпеки (Firewalls / IPS)?", opt: ["Правила Default Deny, мікросегментація мережі, включений IPS", "Тільки базовий NAT та відкриття потрібних портів", "Трафік між серверами та VLAN-ами не фільтрується"], val: [2,1,0] }
         ]
     };
 
@@ -193,7 +206,9 @@
         const container = document.getElementById('quizContainer');
         container.innerHTML = '';
         
-        const set = (sel.toLowerCase().includes('адміністратор')) ? bank.admin : bank.user;
+        // Вибираємо масив питань відповідно до обраної посади
+        const set = bank[sel]; 
+        
         set.forEach((item, i) => {
             container.innerHTML += `<div class="quiz-item"><p><strong>${item.q}</strong></p><div class="options">
                 ${item.opt.map((o, idx) => `<label><input type="radio" name="q${i+1}" value="${item.val[idx]}"> ${o}</label>`).join('')}
@@ -213,12 +228,15 @@
         document.querySelectorAll('input[name="docs"]:checked').forEach(c => docs.push(c.value));
         document.querySelectorAll('input[name="logs"]:checked').forEach(c => logs.push(c.value));
         
-        // Отримуємо текст із поля для ПЗ
         const swText = document.getElementById('softwareInput').value.trim();
         const swFinal = swText ? swText : "Не вказано";
 
-        [1,2,3].forEach(i => {
-            const r = document.querySelector(`input[name="q${i}"]:checked`);
+        // Динамічний підрахунок балів
+        const set = bank[pos];
+        const maxScore = set.length * 2; // Максимально можливий бал для поточної ролі
+
+        set.forEach((_, i) => {
+            const r = document.querySelector(`input[name="q${i+1}"]:checked`);
             if(r) score += parseInt(r.value);
         });
 
@@ -232,18 +250,27 @@
         document.getElementById('rSecurity').innerText = `КСЗІ: ${document.getElementById('kszi').value}, СУІБ: ${document.getElementById('suib').value}`;
         document.getElementById('rLogs').innerText = logs.join(', ') || "Журнали не ведуться";
         document.getElementById('rDocs').innerText = docs.join(', ') || "Документація відсутня";
-        document.getElementById('rPoints').innerText = score;
+        document.getElementById('rPoints').innerText = `${score} / ${maxScore} балів`;
 
+        // Розрахунок відсотка для універсального висновку
+        let percent = (score / maxScore) * 100;
         let res = "";
-        if(score >= 5) res = "Високий рівень обізнаності. Відповідає вимогам політики ІБ.";
-        else if(score >= 3) res = "Задовільний рівень. Рекомендується проведення інструктажу.";
-        else res = "Низький рівень (КРИТИЧНО). Необхідне термінове навчання персоналу.";
+        
+        if (percent >= 80) {
+            res = "Високий рівень експертизи/обізнаності. Процеси відповідають кращим практикам ІБ.";
+        } else if (percent >= 50) {
+            res = "Задовільний рівень. Виявлено зони для розвитку та оптимізації процесів ІБ.";
+        } else {
+            res = "Низький рівень (КРИТИЧНО). Виявлено суттєві ризики в інфраструктурі та процесах.";
+        }
+        
         document.getElementById('rConclusion').innerText = res;
 
         document.getElementById('formView').style.display = 'none';
         document.getElementById('reportView').style.display = 'block';
     }
 
+    // Запускаємо при першому завантаженні сторінки, щоб відрендерити питання для "Користувача"
     window.onload = handlePosChange;
 </script>
 </body>
