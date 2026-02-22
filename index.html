@@ -24,7 +24,7 @@
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9em; }
         input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-        .software-grid, .detail-grid { 
+        .detail-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
             gap: 10px; 
@@ -33,7 +33,6 @@
             border: 1px solid #ddd;
             background: #fafafa;
         }
-        .software-grid { max-height: 550px; overflow-y: auto; }
         
         .sw-category { grid-column: 1 / -1; font-weight: bold; border-bottom: 2px solid var(--accent); color: var(--accent); margin-top: 15px; padding-bottom: 5px; background: #eee; padding-left: 10px; }
         .sw-item { display: flex; align-items: center; gap: 8px; font-size: 0.85em; cursor: pointer; font-weight: normal; padding: 2px 0; }
@@ -106,36 +105,9 @@
             <label class="sw-item"><input type="checkbox" name="hw" value="Принтери/Сканери"> БФП (Принтери/Сканери)</label>
         </div>
 
-        <label style="margin-top: 15px;">Програмне забезпечення (оберіть наявні):</label>
-        <div class="software-grid">
-            <div class="sw-category">Системні та офісні програми</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Cisco Secure Client Full"> Cisco Secure Client Full</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Office 365"> Microsoft Office 365</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="LibreOffice"> LibreOffice</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Visio"> Microsoft Visio</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="7-Zip"> 7-Zip</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Adobe Reader"> Adobe Reader</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="PowerShell 7"> PowerShell 7</label>
-
-            <div class="sw-category">Українські спеціалізовані програми</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="ІІТ Користувач ЦСК-1"> ІІТ Користувач ЦСК-1</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="ІІТ Захист з'єднань"> ІІТ Захист з'єднань</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Scan Client (Аскод)"> Scan Client (Аскод)</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Medoc"> Medoc</label>
-
-            <div class="sw-category">Комунікаційні інструменти</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Webex"> Webex</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Zoom"> Zoom</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Google Chrome"> Google Chrome</label>
-
-            <div class="sw-category">Розробка та адміністрування</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Notepad++"> Notepad++</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Postman"> Postman</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Wireshark"> Wireshark</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Git"> Git</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Docker Desktop"> Docker Desktop</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="PyCharm"> PyCharm</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="CrowdStrike Falcon"> CrowdStrike Falcon</label>
+        <div class="form-group" style="margin-top: 20px;">
+            <label>Програмне забезпечення (вкажіть наявне ПЗ через кому):</label>
+            <textarea id="softwareInput" rows="4" placeholder="Напр: Windows 10, Microsoft Office 365, Cisco Secure Client, 1C, Антивірус Defender..."></textarea>
         </div>
 
         <div class="section-title">III. Організаційне забезпечення та Журнали</div>
@@ -236,12 +208,15 @@
         
         if(!name || !comp) return alert("Заповніть назву компанії та ПІБ!");
 
-        let hw = [], sw = [], docs = [], logs = [], score = 0;
+        let hw = [], docs = [], logs = [], score = 0;
         document.querySelectorAll('input[name="hw"]:checked').forEach(c => hw.push(c.value));
-        document.querySelectorAll('input[name="sw"]:checked').forEach(c => sw.push(c.value));
         document.querySelectorAll('input[name="docs"]:checked').forEach(c => docs.push(c.value));
         document.querySelectorAll('input[name="logs"]:checked').forEach(c => logs.push(c.value));
         
+        // Отримуємо текст із поля для ПЗ
+        const swText = document.getElementById('softwareInput').value.trim();
+        const swFinal = swText ? swText : "Не вказано";
+
         [1,2,3].forEach(i => {
             const r = document.querySelector(`input[name="q${i}"]:checked`);
             if(r) score += parseInt(r.value);
@@ -253,7 +228,7 @@
         document.getElementById('rUser').innerText = `${name} (${pos})`;
         document.getElementById('rPcCount').innerText = document.getElementById('pcCount').value || "Не вказано";
         document.getElementById('rHw').innerText = hw.join(', ') || "Не вказано";
-        document.getElementById('rSw').innerText = sw.join(', ') || "Не обрано";
+        document.getElementById('rSw').innerText = swFinal;
         document.getElementById('rSecurity').innerText = `КСЗІ: ${document.getElementById('kszi').value}, СУІБ: ${document.getElementById('suib').value}`;
         document.getElementById('rLogs').innerText = logs.join(', ') || "Журнали не ведуться";
         document.getElementById('rDocs').innerText = docs.join(', ') || "Документація відсутня";
@@ -273,5 +248,6 @@
 </script>
 </body>
 </html>
+
 
 
