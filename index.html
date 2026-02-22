@@ -23,8 +23,6 @@
         .form-group { flex: 1; min-width: 250px; margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9em; }
         input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        
-        #otherPosGroup { display: none; margin-top: 10px; }
 
         .software-grid, .detail-grid { 
             display: grid; 
@@ -78,14 +76,12 @@
         <div class="form-row">
             <div class="form-group"><label>ПІБ:</label><input type="text" id="userName"></div>
             <div class="form-group">
-                <label>Посада / Роль:</label>
+                <label>Роль в ІТС:</label>
                 <select id="userPos" onchange="handlePosChange()">
                     <option value="Користувач ІТС">Користувач ІТС</option>
                     <option value="Системний адміністратор ІТС">Системний адміністратор ІТС</option>
                     <option value="Адміністратор безпеки ІТС">Адміністратор безпеки ІТС</option>
-                    <option value="Other">Інша посада...</option>
                 </select>
-                <div id="otherPosGroup"><input type="text" id="otherPosInput" placeholder="Вкажіть посаду вручну"></div>
             </div>
         </div>
 
@@ -222,10 +218,9 @@
 
     function handlePosChange() {
         const sel = document.getElementById('userPos').value;
-        document.getElementById('otherPosGroup').style.display = (sel === 'Other') ? 'block' : 'none';
-        
         const container = document.getElementById('quizContainer');
         container.innerHTML = '';
+        
         const set = (sel.toLowerCase().includes('адміністратор')) ? bank.admin : bank.user;
         set.forEach((item, i) => {
             container.innerHTML += `<div class="quiz-item"><p><strong>${item.q}</strong></p><div class="options">
@@ -235,8 +230,7 @@
     }
 
     function processAudit() {
-        const sel = document.getElementById('userPos');
-        const pos = (sel.value === 'Other') ? (document.getElementById('otherPosInput').value || "Інша посада") : sel.value;
+        const pos = document.getElementById('userPos').value;
         const name = document.getElementById('userName').value;
         const comp = document.getElementById('company').value;
         
