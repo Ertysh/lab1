@@ -22,21 +22,21 @@
         .form-row { display: flex; gap: 20px; margin-top: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 250px; margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9em; }
-        input[type="text"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         
         #otherPosGroup { display: none; margin-top: 10px; }
 
-        .software-grid { 
+        .software-grid, .detail-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
             gap: 10px; 
             margin-top: 15px;
-            max-height: 500px;
-            overflow-y: auto;
             padding: 15px;
             border: 1px solid #ddd;
             background: #fafafa;
         }
+        .software-grid { max-height: 550px; overflow-y: auto; }
+        
         .sw-category { grid-column: 1 / -1; font-weight: bold; border-bottom: 2px solid var(--accent); color: var(--accent); margin-top: 15px; padding-bottom: 5px; background: #eee; padding-left: 10px; }
         .sw-item { display: flex; align-items: center; gap: 8px; font-size: 0.85em; cursor: pointer; font-weight: normal; padding: 2px 0; }
 
@@ -72,122 +72,105 @@
 
         <div class="section-title">I. Персональні дані</div>
         <div class="form-row">
-            <div class="form-group"><label>Місто:</label><input type="text" id="city"></div>
-            <div class="form-group"><label>Організація:</label><input type="text" id="company"></div>
+            <div class="form-group"><label>Місто:</label><input type="text" id="city" placeholder="Напр: Дніпро"></div>
+            <div class="form-group"><label>Організація:</label><input type="text" id="company" placeholder="Повна назва"></div>
         </div>
         <div class="form-row">
             <div class="form-group"><label>ПІБ:</label><input type="text" id="userName"></div>
             <div class="form-group">
-                <label>Посада:</label>
+                <label>Посада / Роль:</label>
                 <select id="userPos" onchange="handlePosChange()">
                     <option value="Користувач ІТС">Користувач ІТС</option>
                     <option value="Системний адміністратор ІТС">Системний адміністратор ІТС</option>
                     <option value="Адміністратор безпеки ІТС">Адміністратор безпеки ІТС</option>
                     <option value="Other">Інша посада...</option>
                 </select>
-                <div id="otherPosGroup"><input type="text" id="otherPosInput" placeholder="Вкажіть посаду"></div>
+                <div id="otherPosGroup"><input type="text" id="otherPosInput" placeholder="Вкажіть посаду вручну"></div>
             </div>
+        </div>
+
+        <div class="section-title">II. Склад ІТС (Hardware & Infrastructure)</div>
+        <div class="form-row">
             <div class="form-group">
-                <label>Кваліфікація:</label>
-                <select id="userLevel">
-                    <option value="Початковий">Початковий</option>
-                    <option value="Середній">Середній</option>
-                    <option value="Високий">Високий</option>
-                </select>
+                <label>Кількість комп'ютерних робочих місць (АРМ):</label>
+                <input type="number" id="pcCount" min="0" placeholder="0">
             </div>
         </div>
-
-        <div class="section-title">II. Склад ІТС (Hardware & Software)</div>
-        <div class="form-group" style="margin-top:15px">
-            <label>Апаратне забезпечення:</label>
-            <div style="display:flex; gap:20px; flex-wrap:wrap">
-                <label class="sw-item"><input type="checkbox" name="hw" value="Робоча станція"> Робоча станція</label>
-                <label class="sw-item"><input type="checkbox" name="hw" value="Серверне обладнання"> Серверне обладнання</label>
-                <label class="sw-item"><input type="checkbox" name="hw" value="Мережеве обладнання"> Мережеве обладнання</label>
-                <label class="sw-item"><input type="checkbox" name="hw" value="Периферія"> Принтери/Сканери</label>
-            </div>
+        
+        <label>Тип апаратного забезпечення (детально):</label>
+        <div class="detail-grid">
+            <label class="sw-item"><input type="checkbox" name="hw" value="АРМ (Персональні ПК)"> АРМ (Персональні ПК)</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Мобільні станції (Ноутбуки)"> Мобільні станції (Ноутбуки)</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Сервери (Tower/Rack)"> Сервери (Tower/Rack)</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Віртуальні сервери (VPS/VDS)"> Віртуальні сервери</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="СЗД (NAS/SAN)"> СЗД (NAS/SAN)</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Мережеві комутатори (L2/L3)"> Мережеві комутатори (L2/L3)</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Маршрутизатори/Шлюзи"> Маршрутизатори/Шлюзи</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Hardware Firewalls"> Апаратні Firewalls</label>
+            <label class="sw-item"><input type="checkbox" name="hw" value="Принтери/Сканери"> БФП (Принтери/Сканери)</label>
         </div>
 
-        <label>Програмне забезпечення (оберіть наявні):</label>
+        <label style="margin-top: 15px;">Програмне забезпечення (оберіть наявні):</label>
         <div class="software-grid">
             <div class="sw-category">Системні та офісні програми</div>
             <label class="sw-item"><input type="checkbox" name="sw" value="Cisco Secure Client Full"> Cisco Secure Client Full</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Office 365"> Microsoft Office 365 (Word, Excel, Outlook...)</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Office 365"> Microsoft Office 365</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="LibreOffice"> LibreOffice</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Visio"> Microsoft Visio</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Project"> Microsoft Project</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Crystal Report"> Crystal Report</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value=".Net Framework 1.1"> .Net Framework 1.1</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="7-Zip"> 7-Zip</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Adobe Reader"> Adobe Reader (PDF)</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Microsoft Visual C++"> Microsoft Visual C++</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Adobe Reader"> Adobe Reader</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="PowerShell 7"> PowerShell 7</label>
 
             <div class="sw-category">Українські спеціалізовані програми</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="ІІТ Користувач ЦСК-1"> ІІТ Користувач ЦСК-1 (+Агент)</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="ІІТ Користувач ЦСК-1"> ІІТ Користувач ЦСК-1</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="ІІТ Захист з'єднань"> ІІТ Захист з'єднань</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="Scan Client (Аскод)"> Scan Client (Аскод)</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Callway"> Callway</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Team Library"> Team Library</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="1C / Medoc"> 1C / Medoc</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="АРМ Адміністратора"> АРМ Адміністратора (електронний обмін)</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="АРМ Web-Клієнта"> АРМ Web-Клієнта</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Medoc"> Medoc</label>
 
-            <div class="sw-category">Комунікація та Розробка</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Webex / Zoom"> Webex / Zoom</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Edge/Opera/Chrome"> Edge / Opera / Chrome</label>
+            <div class="sw-category">Комунікаційні інструменти</div>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Webex"> Webex</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Zoom"> Zoom</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Google Chrome"> Google Chrome</label>
+
+            <div class="sw-category">Розробка та адміністрування</div>
             <label class="sw-item"><input type="checkbox" name="sw" value="Notepad++"> Notepad++</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Postman/SoapUI/JMeter"> Postman / SoapUI / JMeter</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Total Commander/WinSCP"> Total Commander / WinSCP</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Git / git-bash"> Git / git-bash</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="JDK/Java 8/11"> JDK 11 / Java 8</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Intellij IDEA / PyCharm"> Intellij IDEA / PyCharm</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="VS Code"> Visual Studio Code</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Jenkins"> Jenkins</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Node.js 22.14"> Node.js 22.14</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Python 3.11+"> Python 3.11+</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Postman"> Postman</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Wireshark"> Wireshark</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="Git"> Git</label>
             <label class="sw-item"><input type="checkbox" name="sw" value="Docker Desktop"> Docker Desktop</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Cygwin / OpenShift oc"> Cygwin / oc utility</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="ubhostscaner/dstu"> ubhostscaner / ubhostdstu</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="ShareX"> ShareX</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Duo Mobile"> Duo Mobile</label>
-
-            <div class="sw-category">Бази даних та Адміністрування</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="MySQL Workbench"> MySQL Workbench</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Oracle SQL Developer"> Oracle SQL Developer / Client</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="DBeaver/pgAdmin"> DBeaver / pgAdmin</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="DbVisualizer"> DbVisualizer</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="dbForge Studio"> dbForge Studio (Oracle/PostgreSQL)</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="SQL Navigator"> SQL Navigator for Oracle</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="mRemoteNG/RVTools"> mRemoteNG / RVTools</label>
-
-            <div class="sw-category">Безпека та Адміністрування мережі</div>
-            <label class="sw-item"><input type="checkbox" name="sw" value="CrowdStrike Falcon Sensor"> CrowdStrike Falcon Sensor</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Cisco ASDM-IDM"> Cisco ASDM-IDM Launcher</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="Checkpoint Client/SmartConsole"> Checkpoint Client / SmartConsole</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="KeePass"> KeePass</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="WireShark"> WireShark</label>
-            <label class="sw-item"><input type="checkbox" name="sw" value="MobaXterm"> MobaXterm</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="PyCharm"> PyCharm</label>
+            <label class="sw-item"><input type="checkbox" name="sw" value="CrowdStrike Falcon"> CrowdStrike Falcon</label>
         </div>
 
-        <div class="section-title">III. СУІБ, КСЗІ та Документація</div>
+        <div class="section-title">III. Організаційне забезпечення та Журнали</div>
         <div class="form-row">
             <div class="form-group"><label>Статус КСЗІ:</label>
-                <select id="kszi"><option>Наявний атестат</option><option>В розробці</option><option>Відсутня</option></select>
+                <select id="kszi"><option>В наявності (чинний атестат)</option><option>В процесі розробки</option><option>Відсутня</option></select>
             </div>
             <div class="form-group"><label>СУІБ (ISO 27001):</label>
-                <select id="suib"><option>Сертифіковано</option><option>Частково</option><option>Ні</option></select>
+                <select id="suib"><option>Сертифіковано</option><option>Частково впроваджено</option><option>Ні</option></select>
             </div>
         </div>
-        <label>Наявна нормативна документація:</label>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding: 15px; border: 1px solid #ccc; background: #fff;">
-            <label class="sw-item"><input type="checkbox" name="docs" value="Положення про ІБ"> Положення про ІБ</label>
-            <label class="sw-item"><input type="checkbox" name="docs" value="Інструкції користувачів"> Інструкції користувачів</label>
-            <label class="sw-item"><input type="checkbox" name="docs" value="План реагування"> План реагування на інциденти</label>
-            <label class="sw-item"><input type="checkbox" name="docs" value="Журнали обліку"> Журнали обліку</label>
+        
+        <label>Ведення журналів обліку (відповідно до НД ТЗІ):</label>
+        <div class="detail-grid">
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал обліку носіїв інформації"> Журнал обліку машинних носіїв інформації</label>
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал обліку користувачів"> Журнал обліку користувачів та їх привілеїв</label>
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал видачі паролів"> Журнал генерації та видачі паролів</label>
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал реєстрації інцидентів"> Журнал реєстрації інцидентів безпеки</label>
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал антивірусних перевірок"> Журнал антивірусних перевірок</label>
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал доступу до серверної"> Журнал доступу до серверних приміщень</label>
+            <label class="sw-item"><input type="checkbox" name="logs" value="Журнал ТО"> Журнал технічного обслуговування АЗ</label>
+        </div>
+        
+        <label style="margin-top:15px">Інша документація:</label>
+        <div style="display:flex; gap:15px; flex-wrap:wrap">
+             <label class="sw-item"><input type="checkbox" name="docs" value="Політика безпеки"> Політика безпеки</label>
+             <label class="sw-item"><input type="checkbox" name="docs" value="Інструкції користувачів"> Інструкції користувачів</label>
+             <label class="sw-item"><input type="checkbox" name="docs" value="План BCP/DRP"> План відновлення (BCP/DRP)</label>
         </div>
 
-        <div class="section-title">IV. Тестування</div>
+        <div class="section-title">IV. Опитування (Анкетування)</div>
         <div id="quizContainer"></div>
 
         <button id="generateBtn" onclick="processAudit()">СФОРМУВАТИ ПРОТОКОЛ</button>
@@ -200,22 +183,24 @@
             <p><strong>Організація:</strong> <span id="rComp"></span></p>
             <table class="report-table">
                 <tr><th colspan="2" style="background:#f9f9f9">1. Об'єкт аудиту</th></tr>
-                <tr><td style="width:35%">Користувач / Посада</td><td id="rUser"></td></tr>
-                <tr><td>Обладнання</td><td id="rHw"></td></tr>
+                <tr><td style="width:35%">Користувач / Роль</td><td id="rUser"></td></tr>
+                <tr><td>Кількість АРМ</td><td id="rPcCount"></td></tr>
+                <tr><td>Апаратне забезпечення</td><td id="rHw"></td></tr>
                 <tr><td>Програмне забезпечення</td><td id="rSw"></td></tr>
-                <tr><th colspan="2" style="background:#f9f9f9">2. Стан безпеки</th></tr>
-                <tr><td>КСЗІ та СУІБ</td><td id="rSecurity"></td></tr>
+                <tr><th colspan="2" style="background:#f9f9f9">2. Організаційне забезпечення</th></tr>
+                <tr><td>Статус КСЗІ / СУІБ</td><td id="rSecurity"></td></tr>
+                <tr><td>Журнали обліку</td><td id="rLogs"></td></tr>
                 <tr><td>Документація</td><td id="rDocs"></td></tr>
             </table>
-            <div class="score-indicator" id="rScoreBox">ОЦІНКА: <span id="rPoints"></span>/6</div>
-            <p><strong>Висновок:</strong> <span id="rConclusion"></span></p>
+            <div class="score-indicator" id="rScoreBox">РЕЗУЛЬТАТ ОПИТУВАННЯ: <span id="rPoints"></span>/6</div>
+            <p><strong>Висновок аудитора:</strong> <span id="rConclusion"></span></p>
             <div class="signatures">
                 <div><p>Аудитор:</p><div class="sig-line">Санжара Є.В.</div></div>
-                <div><p>Користувач:</p><div class="sig-line">(підпис)</div></div>
+                <div><p>Представник об'єкта:</p><div class="sig-line">(підпис)</div></div>
             </div>
             <div class="no-print" style="margin-top:30px; text-align:center">
-                <button onclick="window.print()" style="background:var(--success); color:white; padding:10px 20px; border:none; cursor:pointer">PDF / Друк</button>
-                <button onclick="location.reload()" style="margin-left:10px; padding:10px 20px; cursor:pointer">Назад</button>
+                <button onclick="window.print()" style="background:var(--success); color:white; padding:12px 25px; border:none; cursor:pointer; font-weight:bold">PDF / Друк</button>
+                <button onclick="location.reload()" style="margin-left:10px; padding:12px 25px; cursor:pointer">Повернутись</button>
             </div>
         </div>
     </div>
@@ -224,20 +209,21 @@
 <script>
     const bank = {
         user: [
-            { q: "1. Як часто змінюєте пароль?", opt: ["90 днів", "Коли змушує система", "Ніколи"], val: [2,1,0] },
-            { q: "2. Дії при інциденті?", opt: ["Повідомляю СБ", "Виправляю сам", "Ігнорую"], val: [2,1,0] },
-            { q: "3. Де бекапи документів?", opt: ["Мережеве сховище", "Робочий стіл", "Немає"], val: [2,1,0] }
+            { q: "1. Як часто змінюєте пароль до ІТС?", opt: ["Раз на 90 днів", "Коли змушує система", "Ніколи"], val: [2,1,0] },
+            { q: "2. Дії при виявленні підозрілої активності?", opt: ["Повідомляю адміністратора", "Виправляю сам", "Ігнорую"], val: [2,1,0] },
+            { q: "3. Де зберігаються резервні копії документів?", opt: ["На мережевому сховищі", "На робочому столі", "Не роблю копій"], val: [2,1,0] }
         ],
         admin: [
-            { q: "1. Контроль цілісності файлів?", opt: ["HIDS/Автоматизовано", "Ручний", "Відсутній"], val: [2,1,0] },
-            { q: "2. Аналіз логів?", opt: ["SIEM/Щоденно", "Раз на тиждень", "Тільки при збоях"], val: [2,1,0] },
-            { q: "3. Vulnerability Management?", opt: ["Регулярний скан", "Тільки критичні", "По запиту"], val: [2,1,0] }
+            { q: "1. Контроль цілісності системних файлів?", opt: ["Автоматизовано (HIDS)", "Ручний контроль", "Відсутній"], val: [2,1,0] },
+            { q: "2. Моніторинг логів безпеки?", opt: ["SIEM / Щоденно", "Періодично", "Тільки при збоях"], val: [2,1,0] },
+            { q: "3. Управління вразливостями (Vulnerability Mgmt)?", opt: ["Регулярне сканування", "Тільки критичні патчі", "Не проводиться"], val: [2,1,0] }
         ]
     };
 
     function handlePosChange() {
         const sel = document.getElementById('userPos').value;
         document.getElementById('otherPosGroup').style.display = (sel === 'Other') ? 'block' : 'none';
+        
         const container = document.getElementById('quizContainer');
         container.innerHTML = '';
         const set = (sel.toLowerCase().includes('адміністратор')) ? bank.admin : bank.user;
@@ -250,14 +236,18 @@
 
     function processAudit() {
         const sel = document.getElementById('userPos');
-        const pos = (sel.value === 'Other') ? (document.getElementById('otherPosInput').value || "Не вказано") : sel.value;
+        const pos = (sel.value === 'Other') ? (document.getElementById('otherPosInput').value || "Інша посада") : sel.value;
         const name = document.getElementById('userName').value;
-        if(!name || !document.getElementById('company').value) return alert("Заповніть ПІБ та Організацію!");
+        const comp = document.getElementById('company').value;
+        
+        if(!name || !comp) return alert("Заповніть назву компанії та ПІБ!");
 
-        let hw = [], sw = [], docs = [], score = 0;
+        let hw = [], sw = [], docs = [], logs = [], score = 0;
         document.querySelectorAll('input[name="hw"]:checked').forEach(c => hw.push(c.value));
         document.querySelectorAll('input[name="sw"]:checked').forEach(c => sw.push(c.value));
         document.querySelectorAll('input[name="docs"]:checked').forEach(c => docs.push(c.value));
+        document.querySelectorAll('input[name="logs"]:checked').forEach(c => logs.push(c.value));
+        
         [1,2,3].forEach(i => {
             const r = document.querySelector(`input[name="q${i}"]:checked`);
             if(r) score += parseInt(r.value);
@@ -265,14 +255,21 @@
 
         document.getElementById('rDate').innerText = new Date().toLocaleDateString('uk-UA');
         document.getElementById('rCity').innerText = document.getElementById('city').value || "Україна";
-        document.getElementById('rComp').innerText = document.getElementById('company').value;
+        document.getElementById('rComp').innerText = comp;
         document.getElementById('rUser').innerText = `${name} (${pos})`;
+        document.getElementById('rPcCount').innerText = document.getElementById('pcCount').value || "Не вказано";
         document.getElementById('rHw').innerText = hw.join(', ') || "Не вказано";
-        document.getElementById('rSw').innerText = sw.slice(0, 15).join(', ') + (sw.length > 15 ? '...' : '');
+        document.getElementById('rSw').innerText = sw.join(', ') || "Не обрано";
         document.getElementById('rSecurity').innerText = `КСЗІ: ${document.getElementById('kszi').value}, СУІБ: ${document.getElementById('suib').value}`;
-        document.getElementById('rDocs').innerText = docs.join(', ') || "Відсутня";
+        document.getElementById('rLogs').innerText = logs.join(', ') || "Журнали не ведуться";
+        document.getElementById('rDocs').innerText = docs.join(', ') || "Документація відсутня";
         document.getElementById('rPoints').innerText = score;
-        document.getElementById('rConclusion').innerText = score >= 5 ? "Рівень високий." : score >= 3 ? "Задовільно." : "Критично.";
+
+        let res = "";
+        if(score >= 5) res = "Високий рівень обізнаності. Відповідає вимогам політики ІБ.";
+        else if(score >= 3) res = "Задовільний рівень. Рекомендується проведення інструктажу.";
+        else res = "Низький рівень (КРИТИЧНО). Необхідне термінове навчання персоналу.";
+        document.getElementById('rConclusion').innerText = res;
 
         document.getElementById('formView').style.display = 'none';
         document.getElementById('reportView').style.display = 'block';
